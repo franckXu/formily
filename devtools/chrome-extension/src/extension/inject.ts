@@ -1,4 +1,3 @@
-import backend from 'raw-loader!./backend'
 function nullthrows(x: any, message?: string) {
   if (x != null) {
     return x
@@ -10,17 +9,12 @@ function nullthrows(x: any, message?: string) {
   throw error
 }
 
-function injectCode(code) {
+void (function injectCode() {
   const script = document.createElement('script')
-  script.textContent = code
+  script.src = chrome.runtime.getURL('js/backend.bundle.js')
 
   // This script runs before the <head> element is created,
   // so we add the script to <html> instead.
   nullthrows(document.documentElement).appendChild(script)
   nullthrows(script.parentNode).removeChild(script)
-}
-
-injectCode(`;(function(){
-  var exports = {};
-  ${backend}
-})()`)
+})()
